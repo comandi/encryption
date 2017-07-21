@@ -53,7 +53,7 @@ final class EncryptionHelper
         // Wrap the encrypted data key and the ciphertext to keep them together
         $wrapped_contents = \json_encode([
             self::DATA_KEY => $data_key->toString(),
-            self::CIPHERTEXT => $ciphertext,
+            self::CIPHERTEXT => \bin2hex($ciphertext),
         ]);
 
         // Encode the wrapped contents for storage
@@ -82,7 +82,7 @@ final class EncryptionHelper
 
         // Decrypt the ciphertext
         $plaintext = self::doDecrypt(
-            $wrapped_contents[self::CIPHERTEXT],
+            \hex2bin($wrapped_contents[self::CIPHERTEXT]),
             $decrypted_key->plaintext()
         );
 
