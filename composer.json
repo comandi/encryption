@@ -4,7 +4,7 @@
     "type": "library",
     "require": {
         "php": ">=7.1",
-        "ext-libsodium": ">=1.0.6",
+        "ext-libsodium": ">=2.0",
         "ramsey/uuid": "^3.6",
         "league/flysystem": "^1.0",
         "dusank/knapsack": "^10.0"
