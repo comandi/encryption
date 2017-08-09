@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Comandi\Encryption\Key;
 
-use function Sodium\memzero;
+use function sodium_memzero;
 
 abstract class ManagedKey
 {
@@ -151,7 +151,7 @@ abstract class ManagedKey
     public function seal()
     {
         if ($this->isDecrypted()) {
-            memzero($this->plaintextDataKey);
+            sodium_memzero($this->plaintextDataKey);
             $this->decrypted = false;
         }
     }

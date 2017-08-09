@@ -6,9 +6,9 @@ namespace Comandi\Encryption\KeyManager\MasterKeyProvider;
 
 use Comandi\Encryption\Exception\MasterKeyDoesNotExist;
 use Comandi\Encryption\Key\PrivateLabelMasterKey;
-use const Sodium\CRYPTO_SECRETBOX_NONCEBYTES;
-use function Sodium\crypto_secretbox;
-use function Sodium\crypto_secretbox_open;
+use const SODIUM_CRYPTO_SECRETBOX_NONCEBYTES;
+use function sodium_crypto_secretbox;
+use function sodium_crypto_secretbox_open;
 
 /**
  * InMemoryMasterKeyProvider
@@ -62,12 +62,12 @@ final class InMemoryMasterKeyProvider implements MasterKeyProvider
     ): PrivateLabelMasterKey
     {
         $plaintext = random_bytes($keyLengthInBytes);
-        $nonce = random_bytes(CRYPTO_SECRETBOX_NONCEBYTES);
+        $nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
 
         $ciphertext = sprintf(
             '%s::%s',
             $nonce,
-            crypto_secretbox($plaintext, $nonce, $this->privateKey)
+            sodium_crypto_secretbox($plaintext, $nonce, $this->privateKey)
         );
 
         return PrivateLabelMasterKey::createNew(
@@ -91,7 +91,7 @@ final class InMemoryMasterKeyProvider implements MasterKeyProvider
 
         list($nonce, $ciphertext) = explode('::', $key->ciphertext(), 2);
 
-        $plaintext = crypto_secretbox_open($ciphertext, $nonce, $this->privateKey);
+        $plaintext = sodium_crypto_secretbox_open($ciphertext, $nonce, $this->privateKey);
 
         return $key->withPlaintext($plaintext);
     }
