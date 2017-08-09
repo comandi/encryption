@@ -7,9 +7,11 @@ namespace Comandi\Encryption;
 use Comandi\Encryption\Key\DataKey;
 use Comandi\Encryption\KeyManager\KeyManager;
 use function mb_substr;
-use function Sodium\crypto_aead_chacha20poly1305_ietf_decrypt;
-use function Sodium\crypto_aead_chacha20poly1305_ietf_encrypt;
-use function Sodium\memzero;
+use function sodium_crypto_aead_chacha20poly1305_ietf_decrypt;
+use function sodium_crypto_aead_chacha20poly1305_ietf_encrypt;
+use function sodium_memzero;
+use const SODIUM_CRYPTO_AEAD_CHACHA20POLY1305_IETF_KEYBYTES;
+use const SODIUM_CRYPTO_AEAD_CHACHA20POLY1305_IETF_NPUBBYTES;
 
 final class EncryptionHelper
 {
@@ -48,7 +50,7 @@ final class EncryptionHelper
             $data_key->plaintext()
         );
 
-        memzero($plaintext);
+        sodium_memzero($plaintext);
 
         // Wrap the encrypted data key and the ciphertext to keep them together
         $wrapped_contents = \json_encode([
@@ -100,15 +102,15 @@ final class EncryptionHelper
     {
         $nonce = \random_bytes(self::nonceLength());
 
-        $ciphertext = crypto_aead_chacha20poly1305_ietf_encrypt(
+        $ciphertext = sodium_crypto_aead_chacha20poly1305_ietf_encrypt(
             $plaintext,
             $nonce,
             $nonce,
             $key
         );
 
-        memzero($key);
-        memzero($plaintext);
+        sodium_memzero($key);
+        sodium_memzero($plaintext);
 
         return $nonce . $ciphertext;
     }
@@ -127,7 +129,7 @@ final class EncryptionHelper
         $ciphertext = mb_substr($message, self::nonceLength(), null, '8bit');
 
         // Decrypt the ciphertext
-        $plaintext = crypto_aead_chacha20poly1305_ietf_decrypt(
+        $plaintext = sodium_crypto_aead_chacha20poly1305_ietf_decrypt(
             $ciphertext,
             $nonce,
             $nonce,
@@ -138,7 +140,7 @@ final class EncryptionHelper
             throw new \RuntimeException('Cannot decrypt message.');
         }
 
-        memzero($key);
+        sodium_memzero($key);
 
         return $plaintext;
     }
@@ -148,7 +150,7 @@ final class EncryptionHelper
      */
     public static function keyLength(): int
     {
-        return \Sodium\CRYPTO_AEAD_CHACHA20POLY1305_IETF_KEYBYTES;
+        return SODIUM_CRYPTO_AEAD_CHACHA20POLY1305_IETF_KEYBYTES;
     }
 
     /**
@@ -156,6 +158,6 @@ final class EncryptionHelper
      */
     private static function nonceLength(): int
     {
-        return \Sodium\CRYPTO_AEAD_CHACHA20POLY1305_IETF_NPUBBYTES;
+        return SODIUM_CRYPTO_AEAD_CHACHA20POLY1305_IETF_NPUBBYTES;
     }
 }
