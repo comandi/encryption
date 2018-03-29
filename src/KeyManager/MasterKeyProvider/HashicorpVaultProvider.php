@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Comandi\Encryption\KeyManager\MasterKeyProvider;
 
+use Comandi\Encryption\Exception\CommunicationException;
 use Comandi\Encryption\Key\PrivateLabelMasterKey;
-use Comandi\Storage\Encryption\Exception\CommunicationException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Request;
